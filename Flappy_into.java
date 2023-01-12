@@ -30,7 +30,7 @@ public class Flappy_into  implements ActionListener, MouseListener, KeyListener 
     BufferedImage backgr;
     BufferedImage frontgr;
     BufferedImage birdy;
-    BufferedImage column_pic;
+    BufferedImage column_picN, column_picS;
 
     Flappy_into() {
         jFrame = new JFrame();
@@ -50,12 +50,13 @@ public class Flappy_into  implements ActionListener, MouseListener, KeyListener 
             File("/home/giks/Desktop/Java_pr/flappy_game_java/images/fg.png"));
             birdy = ImageIO.read(new 
             File("/home/giks/Desktop/Java_pr/flappy_game_java/images/bird.png"));
-            column_pic = ImageIO.read(new 
+            column_picN = ImageIO.read(new 
+            File("/home/giks/Desktop/Java_pr/flappy_game_java/images/pipeNorth.png"));
+            column_picS = ImageIO.read(new 
             File("/home/giks/Desktop/Java_pr/flappy_game_java/images/pipeSouth.png"));
             
         } catch(Exception e){e.printStackTrace();}
                
-        //jFrame.setSize(backgr.getWidth(), backgr.getHeight());
         jFrame.setSize(WIDTH, HEIGHT);
 
         img_panel = new ImagePanel(backgr, jFrame.getWidth(), jFrame.getHeight());
@@ -88,38 +89,37 @@ public class Flappy_into  implements ActionListener, MouseListener, KeyListener 
         int width = 80;
         int height = 50 + random.nextInt(240);
 
-        if (start) {
-            columns.add(new Rectangle(WIDTH + width + columns.size() * 250,
-             HEIGHT - height - 120, width, height));
-            columns.add(new Rectangle(WIDTH + width + (columns.size()-1) * 250,
-             0, width, HEIGHT - space - height));
-        } else {
-            columns.add(new Rectangle(columns.get(columns.size() - 1).x + 500, 
-            HEIGHT - height - 120, width, height));
-            columns.add(new Rectangle(columns.get(columns.size() - 1).x, 
-            0, width, HEIGHT - space - height));
+        if (columns.size() <= 10) {
+            if (start) {
+                columns.add(new Rectangle(WIDTH + width + columns.size() * 250,
+                    HEIGHT - height - 120, width, height));
+                columns.add(new Rectangle(WIDTH + width + (columns.size()-1) * 250,
+                    0, width, HEIGHT - space - height));
+            } else {
+                columns.add(new Rectangle(columns.get(columns.size() - 1).x + 500, 
+                    HEIGHT - height - 120, width, height));
+                columns.add(new Rectangle(columns.get(columns.size() - 1).x, 
+                    0, width, HEIGHT - space - height));
+            }
         }
+
     }
 
     public void paintColumn(Graphics g, Rectangle rectangle) {
-        g.drawImage((Image)column_pic ,rectangle.x, rectangle.y, 
-        rectangle.width, rectangle.height, jFrame);
+        if (rectangle.y == 0) {
+            g.drawImage((Image)column_picN ,rectangle.x, rectangle.y, 
+                rectangle.width, rectangle.height, jFrame);
+        } else {
+            g.drawImage((Image)column_picS ,rectangle.x, rectangle.y, 
+                rectangle.width, rectangle.height, jFrame);
+        }
     }
 
     public void repaint(Graphics g) {
 
-       //g.drawImage((Image)backgr, 0, HEIGHT, WIDTH, 0, jFrame);
-       // g.fillRect(0, 0, WIDTH, HEIGHT);
-
         g.drawImage((Image)frontgr,0, HEIGHT - 120, WIDTH, 120 , jFrame);
-        //g.fillRect(0, HEIGHT - 120, WIDTH, 120);
-
-        //g.setColor(Color.GREEN);
-        //g.fillRect(0, HEIGHT - 120, WIDTH, 20);
 
         g.drawImage((Image)birdy, bird.x, bird.y, jFrame);
-        //g.setColor(Color.RED);
-        //g.fillRect(bird.x, bird.y, bird.width, bird.height);
 
         for (Rectangle column : columns) {
 
@@ -174,6 +174,7 @@ public class Flappy_into  implements ActionListener, MouseListener, KeyListener 
         }
     }
     
+    // !!For loading frame and images 
     public void load_images() {
         //JFrame frame = new JFrame();
         //JLabel label=new JLabel();
@@ -313,7 +314,10 @@ public class Flappy_into  implements ActionListener, MouseListener, KeyListener 
         }else{
             
         }
-        //System.out.println(columns.size());
+        if(gameover == true) {
+            ticks = 0;
+        }
+
 
         img_panel.repaint();
     }
@@ -327,14 +331,5 @@ public class Flappy_into  implements ActionListener, MouseListener, KeyListener 
         public static void main(String[] args) { 
         flappy_birdy = new Flappy_into();
 
-        /*
-        Runtime runtime = Runtime.getRuntime();
-        // Run the garbage collector
-        runtime.gc();
-        // Calculate the used memory
-        long memory = runtime.totalMemory() - runtime.freeMemory();
-        System.out.println("Used memory is bytes: " + memory);
-        System.out.println("Used memory is megabytes: " + bytesToMegabytes(memory));
-        */    
     }
 }
